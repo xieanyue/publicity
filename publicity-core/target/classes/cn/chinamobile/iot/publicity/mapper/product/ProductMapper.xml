@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="cn.chinamobile.iot.publicity.mapper.product.ProductMapper">
+	<resultMap type="java.util.HashMap" id="productMap">
+		<id property="productId" column="product_id"/>
+		<result property="productName" column="product_name"/>
+		<result property="productDesc" column="product_desc"/>
+		<result property="docUrl" column="doc_url"/>
+		<result property="pageUrl" column="page_url"/>
+		<result property="pptUrl" column="ppt_url"/>
+		<result property="thumbnailUrl" column="thumbnail_url"/>
+		<result property="pptToPdfUrl" column="ppt_2_pdf_url"/>
+	</resultMap>
+
+	<select id="queryProductList" parameterType="map" resultMap="productMap">
+		select product_id,product_name,product_desc,
+			doc_url,page_url,ppt_url,thumbnail_url,ppt_2_pdf_url			
+		from t_product
+		<where>
+			<if test="productId !=null and productId != ''">
+				and product_id = #{productId}
+			</if>			
+		</where>
+	</select>
+	
+	<select id="queryProduct" parameterType="map" resultMap="productMap">
+		select product_id,product_name,product_desc,
+			doc_url,page_url,ppt_url,thumbnail_url,ppt_2_pdf_url			
+		from t_product
+		where product_id = #{productId}
+	</select>
+	
+	<select id="queryProductPics" parameterType="map" resultType="string">
+		select 
+			<choose>
+				<when test="module != null and module == 1">
+					doc_pics 
+				</when>
+				<when test="module != null and module == 2">
+					page_pics 
+				</when>
+				<otherwise>
+					ppt_pics 
+				</otherwise>
+			</choose> 
+			as 'productPics'
+		 from t_product
+		where product_id = #{productId}
+	</select>
+</mapper>
